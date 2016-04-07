@@ -2,27 +2,15 @@ import cherrypy
 import os
 import json
 from layer import generate_identity_token
-from json import dumps, loads, JSONEncoder, JSONDecoder
+from LayerClient import LayerClient
 
-class PythonObjectEncoder(JSONEncoder):
-    def default(self, obj):
-        if isinstance(obj, (list, dict, str, unicode, int, float, bool, type(None))):
-            return JSONEncoder.default(self, obj)
-        return {'_python_object': pickle.dumps(obj)}
 
-def as_python_object(dct):
-    if '_python_object' in dct:
-        return pickle.loads(str(dct['_python_object']))
-    return dct
+LAYER_APP_ID = 'e9fa7cf0-e428-11e5-bd3c-a952f30d69c0'
+LAYER_APP_TOKEN = 'L4hzgCQ3ETX6sMmxtjQonMEMT6FTq3KyKcOwJMiEImGstsDP'
 
-def json_serial(obj):
-    """JSON serializer for objects not serializable by default json code"""
 
-    if isinstance(obj, datetime.datetime):
-        return obj.isoformat()
-    if isinstance(obj, ObjectId):
-        return str(obj)
-    raise TypeError ("Type not serializable")
+
+
 
 def cors():
     if cherrypy.request.method == 'OPTIONS':
@@ -60,6 +48,21 @@ class LayerBackend(object):
 
         # Return our token with a JSON Content-Type
         return json.dumps({"identity_token": identityToken.strip()})
+
+
+    @cherrypy.expose
+    @cherrypy.config(**{'tools.cors.on': True})
+    def set_conversation(self, convuuid, participants):
+        client = LayerClient.PlatformClient(
+            LAYER_APP_ID,
+            LAYER_APP_TOKEN,
+        )
+
+        res = client.add_participents(convuuid, participants.split(','))
+        print res
+        
+        return json.dumps({"lol":'ok'})
+
 
 
 
