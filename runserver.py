@@ -8,6 +8,11 @@ from LayerClient import LayerClient
 LAYER_APP_ID = 'e9fa7cf0-e428-11e5-bd3c-a952f30d69c0'
 LAYER_APP_TOKEN = 'L4hzgCQ3ETX6sMmxtjQonMEMT6FTq3KyKcOwJMiEImGstsDP'
 
+DEBUG = True
+if DEBUG:
+    CURATOR_LIST = ["5819256595808256","6403889603543040"]
+else:
+    CURATOR_LIST = ["5819256595808256","6403889603543040"]
 
 
 
@@ -52,19 +57,21 @@ class LayerBackend(object):
 
     @cherrypy.expose
     @cherrypy.config(**{'tools.cors.on': True})
-    def set_conversation(self, convuuid, participants):
+    def set_conversation(self, convuuid, participants=""):
         client = LayerClient.PlatformClient(
             LAYER_APP_ID,
             LAYER_APP_TOKEN,
         )
 
-        res = client.add_participents(convuuid, participants.split(','))
-        print res
+        ALL_PARTICIPENTS = list(set(CURATOR_LIST + [p.strip() for p in participants.split(',')]))
+
+        try:
+            res = client.add_participents(convuuid, ALL_PARTICIPENTS)
+        except:
+            return json.dumps({"status":False, 'msg':'Something went wrong'})
+        return json.dumps({"status":True})
         
-        return json.dumps({"lol":'ok'})
-
-
-
+            
 
 if __name__ == '__main__':
     cherrypy.quickstart(LayerBackend())

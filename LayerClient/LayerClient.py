@@ -206,7 +206,7 @@ class PlatformClient(object):
         Add new participants to the conversation
 
         Parameter `conversation_uuid`: The uuid of the conversation to delete
-        Parameter `participants`: The list of participants uid
+        Parameter `participants`: comma seperated list of participants uid
         """
     
         return self._raw_request(
