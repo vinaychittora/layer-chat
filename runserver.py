@@ -57,7 +57,7 @@ class LayerBackend(object):
 
     @cherrypy.expose
     @cherrypy.config(**{'tools.cors.on': True})
-    def set_conversation(self, convuuid, participants=""):
+    def set_conversation(self, convuuid, participants="", **params):
         client = LayerClient.PlatformClient(
             LAYER_APP_ID,
             LAYER_APP_TOKEN,
