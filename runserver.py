@@ -40,7 +40,7 @@ class LayerBackend(object):
 
     @cherrypy.expose
     @cherrypy.config(**{'tools.cors.on': True})
-    def identity_token(self, user_id, nonce):
+    def identity_token(self, user_id, nonce, **params):
         cherrypy.response.headers['Access-Control-Allow-Origin'] = '*'
         cherrypy.response.headers['Access-Control-Allow-Headers'] = 'origin, content-type, accept, Authorization'
         cherrypy.response.headers['content-type'] = 'application/json'
